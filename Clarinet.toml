@@ -1,0 +1,19 @@
+[project]
+name = "stacksgate"
+description = "StacksGate - sBTC Payment Gateway"
+authors = ["StacksGate Team"]
+telemetry = false
+cache_dir = "./.clarinet"
+requirements = []
+
+[contracts.stacksgate-payment]
+path = "contracts/stacksgate-payment.clar"
+epoch = "latest"
+
+[contracts.stacksgate-escrow]
+path = "contracts/stacksgate-escrow.clar" 
+epoch = "latest"
+
+[repl.analysis]
+passes = ["check_checker"]
+check_checker = { trusted_sender = false, trusted_caller = false, callee_filter = false }

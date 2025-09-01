@@ -1,0 +1,61 @@
+{
+  "name": "stacksgate-widget",
+  "version": "1.0.0",
+  "description": "StacksGate Payment Widget - Embeddable JavaScript SDK",
+  "main": "dist/stacksgate.js",
+  "module": "dist/stacksgate.esm.js",
+  "types": "dist/types/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "rollup -c --watch",
+    "build": "rollup -c",
+    "build:types": "tsc --declaration --emitDeclarationOnly --outDir dist/types",
+    "prepublishOnly": "npm run build && npm run build:types",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "lint": "eslint src --ext .ts,.js",
+    "lint:fix": "eslint src --ext .ts,.js --fix",
+    "serve": "serve dist -p 3001"
+  },
+  "dependencies": {
+    "@stacks/connect": "^7.0.0",
+    "@stacks/network": "^6.0.0",
+    "@stacks/transactions": "^6.0.0",
+    "tslib": "^2.8.1"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^11.1.5",
+    "@types/jest": "^29.5.8",
+    "@typescript-eslint/eslint-plugin": "^6.11.0",
+    "@typescript-eslint/parser": "^6.11.0",
+    "eslint": "^8.54.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "rollup": "^4.3.0",
+    "serve": "^14.2.1",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.2.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stacksgate/widget.git"
+  },
+  "keywords": [
+    "stacksgate",
+    "sbtc",
+    "bitcoin",
+    "payment",
+    "widget",
+    "javascript",
+    "sdk"
+  ],
+  "author": "StacksGate Team",
+  "license": "MIT",
+  "unpkg": "dist/stacksgate.js",
+  "jsdelivr": "dist/stacksgate.js"
+}
