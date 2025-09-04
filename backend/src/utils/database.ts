@@ -5,7 +5,13 @@ import { logger } from './logger';
 
 let pool: Pool;
 
-export async function connectDatabase(): Promise<Pool> {
+export async function connectDatabase(): Promise<Pool | null> {
+  // Skip database connection if not available
+  if (!process.env.DATABASE_URL) {
+    logger.warn('Database connection skipped - DATABASE_URL not set');
+    return null;
+  }
+
   if (!pool) {
     pool = new Pool({
       connectionString: process.env.DATABASE_URL,

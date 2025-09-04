@@ -197,7 +197,7 @@ export function useAuth(): AuthContextType {
 
 // Custom hook for API requests with auth
 export function useAuthenticatedRequest() {
-  const { token } = useAuth();
+  const { token, logout } = useAuth();
 
   return async function apiRequest(endpoint: string, options: RequestInit = {}): Promise<any> {
     const url = `${API_BASE_URL}${endpoint}`;
@@ -220,7 +220,6 @@ export function useAuthenticatedRequest() {
     if (!response.ok) {
       if (response.status === 401) {
         // Token expired, logout
-        const { logout } = useAuth();
         logout();
         return;
       }

@@ -91,6 +91,33 @@ try {
   console.error('❌ Webhook routes failed:', error);
 }
 
+try {
+  console.log('🔄 Loading payment links routes...');
+  const paymentLinksRoutes = require('./routes/paymentLinks').default;
+  app.use('/api/v1/payment-links', paymentLinksRoutes);
+  console.log('✅ Payment links routes loaded');
+} catch (error) {
+  console.error('❌ Payment links routes failed:', error);
+}
+
+try {
+  console.log('🔄 Loading exchange rate routes...');
+  const exchangeRateRoutes = require('./routes/exchangeRate').default;
+  app.use('/api/v1/exchange-rate', exchangeRateRoutes);
+  console.log('✅ Exchange rate routes loaded');
+} catch (error) {
+  console.error('❌ Exchange rate routes failed:', error);
+}
+
+try {
+  console.log('🔄 Loading subscription routes...');
+  const subscriptionRoutes = require('./routes/subscriptions').default;
+  app.use('/api/v1/subscriptions', subscriptionRoutes);
+  console.log('✅ Subscription routes loaded');
+} catch (error) {
+  console.error('❌ Subscription routes failed:', error);
+}
+
 // Add a simple root endpoint
 app.get('/', (req, res) => {
   res.json({
@@ -164,15 +191,28 @@ const gracefulShutdown = (signal: string) => {
 // Initialize server
 async function startWorkingServer() {
   try {
-    console.log('🔄 Connecting to database...');
-    await connectDatabase();
-    console.log('✅ Database connected successfully');
+    // Try to connect to database (optional)
+    try {
+      console.log('🔄 Connecting to database...');
+      const dbConnection = await connectDatabase();
+      if (dbConnection) {
+        console.log('✅ Database connected successfully');
+      } else {
+        console.log('⚠️  Database connection skipped - using in-memory storage');
+      }
+    } catch (error) {
+      console.log('⚠️  Database connection failed, using in-memory storage:', (error as Error).message);
+    }
 
     // Connect to Redis (optional)
     try {
       console.log('🔄 Connecting to Redis...');
-      await connectRedis();
-      console.log('✅ Redis connected successfully');
+      const redisConnection = await connectRedis();
+      if (redisConnection) {
+        console.log('✅ Redis connected successfully');
+      } else {
+        console.log('⚠️  Redis connection skipped - using in-memory cache');
+      }
     } catch (error) {
       console.log('⚠️  Redis connection failed, continuing without cache:', (error as Error).message);
     }

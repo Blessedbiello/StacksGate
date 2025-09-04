@@ -249,9 +249,7 @@ export class Merchant {
     return jwt.sign(
       { 
         merchantId,
-        type: 'merchant',
-        iss: 'stacksgate',
-        aud: 'stacksgate-api'
+        type: 'merchant'
       },
       jwtSecret,
       { 

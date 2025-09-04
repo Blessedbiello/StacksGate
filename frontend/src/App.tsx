@@ -7,9 +7,12 @@ import LoginPage from '@/pages/LoginPage';
 import RegisterPage from '@/pages/RegisterPage';
 import DashboardPage from '@/pages/DashboardPage';
 import PaymentsPage from '@/pages/PaymentsPage';
+import PaymentLinksPage from '@/pages/PaymentLinksPage';
 import SettingsPage from '@/pages/SettingsPage';
 import IntegrationPage from '@/pages/IntegrationPage';
 import WebhooksPage from '@/pages/WebhooksPage';
+import SubscriptionsPage from '@/pages/SubscriptionsPage';
+import PublicPaymentPage from '@/pages/PublicPaymentPage';
 import NotFoundPage from '@/pages/NotFoundPage';
 
 function App() {
@@ -19,6 +22,7 @@ function App() {
         {/* Public routes */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/pay/:linkId" element={<PublicPaymentPage />} />
         
         {/* Protected routes */}
         <Route
@@ -32,6 +36,8 @@ function App() {
           <Route index element={<Navigate to="/dashboard" replace />} />
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="payments" element={<PaymentsPage />} />
+          <Route path="payment-links" element={<PaymentLinksPage />} />
+          <Route path="subscriptions" element={<SubscriptionsPage />} />
           <Route path="settings" element={<SettingsPage />} />
           <Route path="integration" element={<IntegrationPage />} />
           <Route path="webhooks" element={<WebhooksPage />} />

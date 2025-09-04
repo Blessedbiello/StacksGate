@@ -1,0 +1,26 @@
+{
+  "name": "stacksgate-e2e-tests",
+  "version": "1.0.0",
+  "description": "End-to-end tests for StacksGate MVP",
+  "main": "e2e-transaction-test.js",
+  "scripts": {
+    "test": "node e2e-transaction-test.js",
+    "test:webhook": "node webhook-test.js",
+    "test:api": "node api-test.js"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.7",
+    "@stacks/network": "^6.5.4",
+    "@stacks/transactions": "^6.5.4"
+  },
+  "devDependencies": {},
+  "keywords": [
+    "stacksgate",
+    "sbtc",
+    "bitcoin",
+    "stacks",
+    "e2e-testing"
+  ],
+  "author": "StacksGate Team",
+  "license": "MIT"
+}

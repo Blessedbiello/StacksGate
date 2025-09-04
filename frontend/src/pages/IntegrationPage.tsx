@@ -9,20 +9,51 @@ import {
 } from '@heroicons/react/24/outline';
 
 export default function IntegrationPage() {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
   const [demoLoading, setDemoLoading] = useState(false);
   const [widgetLoaded, setWidgetLoaded] = useState(false);
+  const [secretApiKey, setSecretApiKey] = useState<string | null>(null);
 
+  // Define API configuration
+  const publicApiKey = user?.api_key_public || 'pk_test_your_api_key_here';
+  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
+
+  // Fetch secret API key for demo
+  React.useEffect(() => {
+    const fetchSecretKey = async () => {
+      if (!token) return;
+      
+      try {
+        const response = await fetch(`${apiUrl}/merchants/keys`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        if (response.ok) {
+          const keys = await response.json();
+          setSecretApiKey(keys.api_key_secret);
+        }
+      } catch (error) {
+        console.error('Failed to fetch API keys:', error);
+      }
+    };
+    
+    fetchSecretKey();
+  }, [token, apiUrl]);
 
   // Load StacksGate widget for live demo
   React.useEffect(() => {
+    if (!secretApiKey) return; // Wait for secret key to be fetched
+    
     const script = document.createElement('script');
-    script.src = 'http://localhost:3001/stacksgate.js';
+    script.src = import.meta.env.VITE_WIDGET_URL || 'http://localhost:3001/stacksgate.js';
     script.onload = () => {
       if ((window as any).StacksGate) {
         (window as any).StacksGate.init({
-          apiKey: apiKey,
+          apiKey: secretApiKey,
           apiUrl: apiUrl,
           testMode: true
         });
@@ -47,7 +78,7 @@ export default function IntegrationPage() {
         existingScript.parentNode.removeChild(existingScript);
       }
     };
-  }, [apiKey, apiUrl]);
+  }, [secretApiKey, apiUrl]);
 
   const copyToClipboard = (text: string, codeType: string) => {
     navigator.clipboard.writeText(text);
@@ -104,9 +135,6 @@ export default function IntegrationPage() {
     }
   };
 
-  const apiKey = user?.api_key_public || 'pk_test_your_api_key_here';
-  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
-
   const codeExamples = {
     basicWidget: `<!-- Include StacksGate Widget -->
 <script src="http://localhost:3001/stacksgate.js"></script>
@@ -117,7 +145,7 @@ export default function IntegrationPage() {
 <script>
 // Initialize StacksGate
 StacksGate.init({
-  apiKey: '${apiKey}',
+  apiKey: '${publicApiKey}',
   apiUrl: '${apiUrl}',
   testMode: true
 });
@@ -193,12 +221,12 @@ function PaymentPage({ amount, description }) {
   useEffect(() => {
     // Load StacksGate widget script
     const script = document.createElement('script');
-    script.src = 'http://localhost:3001/stacksgate.js';
+    script.src = import.meta.env.VITE_WIDGET_URL || 'http://localhost:3001/stacksgate.js';
     script.onload = () => {
       // Initialize StacksGate
       if (window.StacksGate) {
         window.StacksGate.init({
-          apiKey: '${apiKey}',
+          apiKey: '${publicApiKey}',
           apiUrl: '${apiUrl}',
           testMode: true
         });
@@ -421,10 +449,10 @@ curl ${apiUrl}/payment-intents/pi_1234567890 \\
             <h3 className="font-medium text-gray-900">Interactive Demo</h3>
             <button
               onClick={createDemoPayment}
-              disabled={demoLoading || !widgetLoaded}
+              disabled={demoLoading || !widgetLoaded || !secretApiKey}
               className="bg-bitcoin-600 hover:bg-bitcoin-700 disabled:bg-gray-400 text-white px-4 py-2 rounded-md font-medium"
             >
-              {demoLoading ? 'Creating...' : widgetLoaded ? 'Create Demo Payment' : 'Loading Widget...'}
+              {demoLoading ? 'Creating...' : !secretApiKey ? 'Loading API Keys...' : widgetLoaded ? 'Create Demo Payment' : 'Loading Widget...'}
             </button>
           </div>
           

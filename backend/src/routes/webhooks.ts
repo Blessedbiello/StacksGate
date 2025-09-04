@@ -1,15 +1,28 @@
 import { Router, Request, Response } from 'express';
-import { authenticateApiKey } from '@/middleware/auth';
+import { authenticateApiKey, authenticateJWT } from '@/middleware/auth';
 import { PaymentIntent } from '@/models/PaymentIntent';
+import { Merchant } from '@/models/Merchant';
 import { WebhookService } from '@/services/WebhookService';
 import { logger } from '@/utils/logger';
 
 const router = Router();
 
 // Test webhook endpoint
-router.post('/test', authenticateApiKey, async (req: Request, res: Response) => {
+router.post('/test', authenticateJWT, async (req: Request, res: Response) => {
   try {
-    const merchant = (req as any).merchant;
+    const merchantFromToken = (req as any).merchant;
+    
+    // Fetch full merchant data from database to get current webhook URL
+    const merchant = await Merchant.findById(merchantFromToken.id);
+    
+    if (!merchant) {
+      return res.status(404).json({
+        error: {
+          type: 'invalid_request_error',
+          message: 'Merchant not found',
+        },
+      });
+    }
     
     if (!merchant.webhook_url) {
       return res.status(400).json({
@@ -68,7 +81,7 @@ router.post('/test', authenticateApiKey, async (req: Request, res: Response) => 
 });
 
 // Retry webhook for a specific payment intent
-router.post('/retry/:payment_intent_id', authenticateApiKey, async (req: Request, res: Response) => {
+router.post('/retry/:payment_intent_id', authenticateJWT, async (req: Request, res: Response) => {
   try {
     const merchant = (req as any).merchant;
     const { payment_intent_id } = req.params;
@@ -132,7 +145,7 @@ router.post('/retry/:payment_intent_id', authenticateApiKey, async (req: Request
 });
 
 // Get webhook logs for merchant
-router.get('/logs', authenticateApiKey, async (req: Request, res: Response) => {
+router.get('/logs', authenticateJWT, async (req: Request, res: Response) => {
   try {
     const merchant = (req as any).merchant;
     const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
@@ -168,7 +181,7 @@ router.get('/logs', authenticateApiKey, async (req: Request, res: Response) => {
 });
 
 // Get webhook statistics
-router.get('/stats', authenticateApiKey, async (req: Request, res: Response) => {
+router.get('/stats', authenticateJWT, async (req: Request, res: Response) => {
   try {
     const merchant = (req as any).merchant;
     

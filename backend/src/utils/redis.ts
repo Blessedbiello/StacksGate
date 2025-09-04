@@ -3,13 +3,17 @@ import { logger } from './logger';
 
 let redisClient: RedisClientType;
 
-export async function connectRedis(): Promise<RedisClientType> {
+export async function connectRedis(): Promise<RedisClientType | null> {
+  // Redis is optional, try to connect
+  const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
+
   if (!redisClient) {
     try {
       redisClient = createClient({
-        url: process.env.REDIS_URL || 'redis://localhost:6379',
+        url: redisUrl,
         socket: {
-          connectTimeout: 5000, // 5 second timeout
+          connectTimeout: 2000, // 2 second timeout
+          reconnectStrategy: false, // Don't auto-reconnect
         },
       });
 
@@ -28,9 +32,9 @@ export async function connectRedis(): Promise<RedisClientType> {
       await redisClient.connect();
       logger.info('Redis connection established successfully');
     } catch (error) {
-      logger.warn('Failed to connect to Redis, continuing without cache:', error);
+      logger.warn('Failed to connect to Redis, continuing without cache:', (error as Error).message);
       // Continue without Redis if connection fails
-      redisClient = null as any;
+      return null;
     }
   }
 

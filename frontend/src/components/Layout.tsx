@@ -4,9 +4,11 @@ import { useAuth } from '@/hooks/useAuth';
 import {
   HomeIcon,
   CreditCardIcon,
+  LinkIcon,
   CogIcon,
   CodeBracketIcon,
   BellIcon,
+  CalendarIcon,
   Bars3Icon,
   XMarkIcon,
   ArrowRightOnRectangleIcon,
@@ -15,6 +17,8 @@ import {
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
   { name: 'Payments', href: '/payments', icon: CreditCardIcon },
+  { name: 'Payment Links', href: '/payment-links', icon: LinkIcon },
+  { name: 'Subscriptions', href: '/subscriptions', icon: CalendarIcon },
   { name: 'Integration', href: '/integration', icon: CodeBracketIcon },
   { name: 'Webhooks', href: '/webhooks', icon: BellIcon },
   { name: 'Settings', href: '/settings', icon: CogIcon },

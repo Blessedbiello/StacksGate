@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StacksGate Widget Demo</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: #f5f5f5;
+        }
+        
+        .demo-container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+        }
+        
+        .demo-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        
+        .demo-subtitle {
+            font-size: 16px;
+            color: #666;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .demo-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        
+        .demo-input {
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .demo-button {
+            padding: 12px 24px;
+            background: #f7931a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        
+        .demo-button:hover {
+            background: #e8840f;
+        }
+        
+        .demo-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .demo-output {
+            background: #f9f9f9;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #e1e5e9;
+            margin: 16px 0;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .widget-container {
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #e1e5e9;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .placeholder {
+            text-align: center;
+            color: #666;
+        }
+        
+        .code-example {
+            background: #1e1e1e;
+            color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        
+        .code-example pre {
+            margin: 0;
+            font-size: 14px;
+        }
+        
+        .error {
+            color: #dc3545;
+            background: #f8d7da;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 16px 0;
+        }
+        
+        .success {
+            color: #155724;
+            background: #d1edff;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 16px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1 class="demo-title">StacksGate Widget Demo</h1>
+        <p class="demo-subtitle">
+            Experience sBTC payments with our embeddable widget
+        </p>
+
+        <div class="demo-controls">
+            <input 
+                type="number" 
+                id="amount" 
+                placeholder="Amount (BTC)" 
+                value="0.001" 
+                step="0.001" 
+                min="0.001"
+                class="demo-input"
+            >
+            
+            <input 
+                type="text" 
+                id="description" 
+                placeholder="Payment description" 
+                value="Demo payment"
+                class="demo-input"
+            >
+            
+            <select id="theme" class="demo-input">
+                <option value="auto">Auto Theme</option>
+                <option value="light">Light Theme</option>
+                <option value="dark">Dark Theme</option>
+            </select>
+            
+            <button id="createPayment" class="demo-button">Create Payment</button>
+        </div>
+
+        <div id="output" class="demo-output" style="display: none;"></div>
+        <div id="error" class="error" style="display: none;"></div>
+        <div id="success" class="success" style="display: none;"></div>
+
+        <div id="widget-container" class="widget-container">
+            <div class="placeholder">
+                <p>🔗 Widget will appear here</p>
+                <p>Click "Create Payment" to get started</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Integration Example -->
+    <div class="demo-container">
+        <h2>Integration Example</h2>
+        <p>Here's how to integrate StacksGate into your website:</p>
+        
+        <div class="code-example">
+            <pre><code>// 1. Initialize StacksGate
+StacksGate.init({
+  apiKey: 'pk_test_your_api_key_here',
+  apiUrl: 'https://api.stacksgate.com/v1',
+  testMode: true
+});
+
+// 2. Create a payment intent
+const paymentIntent = await StacksGate.createPaymentIntent({
+  amount: 0.001, // BTC
+  description: 'Payment for digital goods',
+  metadata: { orderId: '12345' }
+});
+
+// 3. Create and mount the widget
+const widget = StacksGate.createWidget(paymentIntent.id, {
+  containerId: 'payment-widget',
+  theme: 'auto',
+  onSuccess: (pi) => {
+    console.log('Payment successful!', pi);
+    // Redirect to success page or show confirmation
+  },
+  onError: (error) => {
+    console.error('Payment failed:', error);
+    // Handle error
+  }
+});
+
+// 4. Clean up when done
+// widget.destroy();</code></pre>
+        </div>
+
+        <h3>HTML Integration</h3>
+        <div class="code-example">
+            <pre><code>&lt;!-- Include the StacksGate widget --&gt;
+&lt;script src="https://js.stacksgate.com/v1/stacksgate.js"&gt;&lt;/script&gt;
+
+&lt;!-- Payment widget container --&gt;
+&lt;div id="payment-widget"&gt;&lt;/div&gt;
+
+&lt;script&gt;
+// Initialize and use StacksGate
+StacksGate.init({ 
+  apiKey: 'pk_test_your_api_key_here',
+  testMode: true 
+});
+
+// Create payment and widget
+async function processPayment() {
+  const paymentIntent = await StacksGate.createPaymentIntent({
+    amount: 0.001,
+    description: 'Test payment'
+  });
+  
+  StacksGate.createWidget(paymentIntent.id, {
+    containerId: 'payment-widget'
+  });
+}
+&lt;/script&gt;</code></pre>
+        </div>
+    </div>
+
+    <!-- Load StacksGate Widget -->
+    <script src="./dist/stacksgate.js"></script>
+    
+    <script>
+        // Demo configuration
+        const config = {
+            apiKey: 'pk_test_demo_key_12345', // Demo API key
+            apiUrl: 'http://localhost:3000/api/v1',
+            testMode: true
+        };
+
+        // Demo state
+        let currentWidget = null;
+
+        // DOM elements
+        const amountInput = document.getElementById('amount');
+        const descriptionInput = document.getElementById('description');
+        const themeSelect = document.getElementById('theme');
+        const createButton = document.getElementById('createPayment');
+        const widgetContainer = document.getElementById('widget-container');
+        const output = document.getElementById('output');
+        const errorDiv = document.getElementById('error');
+        const successDiv = document.getElementById('success');
+
+        // Initialize StacksGate
+        try {
+            StacksGate.init(config);
+            log('StacksGate initialized successfully');
+        } catch (error) {
+            showError('Failed to initialize StacksGate: ' + error.message);
+        }
+
+        // Event listeners
+        createButton.addEventListener('click', createPaymentIntent);
+
+        async function createPaymentIntent() {
+            try {
+                hideMessages();
+                createButton.disabled = true;
+                
+                const amount = parseFloat(amountInput.value);
+                const description = descriptionInput.value;
+                
+                if (!amount || amount <= 0) {
+                    throw new Error('Please enter a valid amount');
+                }
+
+                log('Creating payment intent...');
+
+                // In a real implementation, this would call your backend
+                // For demo purposes, we'll simulate a payment intent
+                const mockPaymentIntent = {
+                    id: 'pi_demo_' + Date.now(),
+                    object: 'payment_intent',
+                    amount: amount,
+                    amount_sats: Math.floor(amount * 100000000),
+                    amount_usd: amount * 45000, // Mock BTC price
+                    currency: 'btc',
+                    status: 'requires_payment',
+                    description: description,
+                    metadata: {},
+                    created: Math.floor(Date.now() / 1000),
+                    expires_at: Math.floor(Date.now() / 1000) + 3600, // 1 hour
+                    client_secret: 'pi_demo_secret_123'
+                };
+
+                log('Payment intent created: ' + JSON.stringify(mockPaymentIntent, null, 2));
+
+                // Destroy existing widget
+                if (currentWidget) {
+                    currentWidget.destroy();
+                    currentWidget = null;
+                }
+
+                // Clear container
+                widgetContainer.innerHTML = '';
+
+                // Create mock widget (since we don't have a real backend)
+                createMockWidget(mockPaymentIntent);
+
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                createButton.disabled = false;
+            }
+        }
+
+        function createMockWidget(paymentIntent) {
+            // Create a mock widget UI for demonstration
+            const theme = themeSelect.value;
+            
+            widgetContainer.innerHTML = `
+                <div class="stacksgate-widget ${theme}" style="
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                    max-width: 400px;
+                    margin: 0 auto;
+                    padding: 24px;
+                    border-radius: 12px;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                    background: ${theme === 'dark' ? '#1a1a1a' : '#ffffff'};
+                    color: ${theme === 'dark' ? '#ffffff' : '#000000'};
+                    border: 1px solid ${theme === 'dark' ? '#333' : '#e1e5e9'};
+                ">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <svg viewBox="0 0 100 40" style="width: 120px; height: 30px;">
+                            <text x="10" y="25" style="font-size: 16px; font-weight: 600; fill: ${theme === 'dark' ? '#fff' : '#000'};">StacksGate</text>
+                        </svg>
+                    </div>
+                    
+                    <h3 style="font-size: 20px; font-weight: 600; margin: 0 0 8px 0; text-align: center;">Connect Your Wallet</h3>
+                    <p style="font-size: 14px; color: ${theme === 'dark' ? '#aaa' : '#666'}; text-align: center; margin: 0 0 20px 0;">
+                        Connect your Stacks wallet to pay with sBTC
+                    </p>
+                    
+                    <div style="background: ${theme === 'dark' ? '#2a2a2a' : '#f9f9f9'}; padding: 16px; border-radius: 8px; margin: 16px 0;">
+                        <div style="text-align: center; margin: 16px 0;">
+                            <span style="display: block; font-size: 24px; font-weight: 600; color: #f7931a;">₿ ${paymentIntent.amount}</span>
+                            <span style="display: block; font-size: 14px; color: ${theme === 'dark' ? '#aaa' : '#666'}; margin-top: 4px;">
+                                ≈ $${paymentIntent.amount_usd.toFixed(2)} USD
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <button onclick="showWalletDemo()" style="
+                        display: flex;
+                        align-items: center;
+                        width: 100%;
+                        padding: 16px;
+                        margin: 8px 0;
+                        border: 2px solid ${theme === 'dark' ? '#333' : '#e1e5e9'};
+                        border-radius: 8px;
+                        background: ${theme === 'dark' ? '#2a2a2a' : '#ffffff'};
+                        color: ${theme === 'dark' ? '#fff' : '#000'};
+                        cursor: pointer;
+                        transition: all 0.2s ease;
+                    ">
+                        <div style="font-size: 24px; margin-right: 12px;">🦾</div>
+                        <span>Connect with Leather</span>
+                    </button>
+                    
+                    <button onclick="showWalletDemo()" style="
+                        display: flex;
+                        align-items: center;
+                        width: 100%;
+                        padding: 16px;
+                        margin: 8px 0;
+                        border: 2px solid ${theme === 'dark' ? '#333' : '#e1e5e9'};
+                        border-radius: 8px;
+                        background: ${theme === 'dark' ? '#2a2a2a' : '#ffffff'};
+                        color: ${theme === 'dark' ? '#fff' : '#000'};
+                        cursor: pointer;
+                        transition: all 0.2s ease;
+                    ">
+                        <div style="font-size: 24px; margin-right: 12px;">🔮</div>
+                        <span>Connect with Xverse</span>
+                    </button>
+                    
+                    <p style="text-align: center; font-size: 12px; color: ${theme === 'dark' ? '#aaa' : '#666'}; margin: 16px 0;">
+                        Don't have a wallet? 
+                        <a href="https://leather.io" target="_blank" style="color: #f7931a; text-decoration: none;">Get Leather</a> or 
+                        <a href="https://xverse.app" target="_blank" style="color: #f7931a; text-decoration: none;">Get Xverse</a>
+                    </p>
+                    
+                    <button onclick="cancelDemo()" style="
+                        width: 100%;
+                        padding: 12px;
+                        background: transparent;
+                        color: ${theme === 'dark' ? '#aaa' : '#666'};
+                        border: 1px solid ${theme === 'dark' ? '#333' : '#e1e5e9'};
+                        border-radius: 8px;
+                        cursor: pointer;
+                        transition: all 0.2s ease;
+                        margin: 8px 0;
+                    ">Cancel</button>
+                </div>
+            `;
+
+            log('Mock widget created and displayed');
+        }
+
+        function showWalletDemo() {
+            showSuccess('Demo: Wallet connection would happen here. In production, this would connect to Leather or Xverse wallet.');
+            log('Wallet connection initiated (demo mode)');
+        }
+
+        function cancelDemo() {
+            widgetContainer.innerHTML = `
+                <div class="placeholder">
+                    <p>🔗 Widget canceled</p>
+                    <p>Click "Create Payment" to try again</p>
+                </div>
+            `;
+            log('Payment canceled');
+        }
+
+        function log(message) {
+            const timestamp = new Date().toISOString();
+            const logEntry = `[${timestamp}] ${message}\n`;
+            output.textContent += logEntry;
+            output.style.display = 'block';
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function showError(message) {
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            successDiv.style.display = 'none';
+        }
+
+        function showSuccess(message) {
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            errorDiv.style.display = 'none';
+        }
+
+        function hideMessages() {
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+        }
+    </script>
+</body>
+</html>

@@ -233,3 +233,32 @@ export function requireMerchantOwnership(resourceIdParam: string = 'id') {
     next();
   };
 }
+
+// Simple token authentication for payment links (using JWT from frontend)
+export async function authenticateToken(req: Request, res: Response, next: NextFunction) {
+  try {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({
+        error: 'No authentication token provided',
+      });
+    }
+
+    const token = authHeader.substring(7);
+    const jwtSecret = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-in-production-min-32-chars';
+
+    const decoded = jwt.verify(token, jwtSecret) as { merchantId: string; iat: number; exp: number };
+    
+    // Add user info to request
+    (req as any).user = {
+      userId: decoded.merchantId,
+    };
+
+    next();
+  } catch (error) {
+    return res.status(401).json({
+      error: 'Invalid authentication token',
+    });
+  }
+}

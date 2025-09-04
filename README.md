@@ -65,8 +65,10 @@ graph TB
 - **🎛️ Dashboard**: Complete payment management interface
 - **📊 Analytics**: Transaction history, revenue tracking, export capabilities
 - **🔑 API Keys**: Secure authentication with public/private key pairs
-- **🪝 Webhooks**: Real-time payment event notifications
-- **💱 Multi-format**: Support for various data export formats
+- **🪝 Webhooks**: Real-time payment event notifications with testing
+- **🔗 Payment Links**: Shareable payment URLs for easy transactions
+- **📅 Subscriptions**: Full recurring payment management with MRR tracking
+- **💱 Currency Conversion**: Real-time sBTC to USD conversion rates
 
 ### For Developers
 - **🔌 Easy Integration**: Single JavaScript widget embed
@@ -564,6 +566,12 @@ StacksGate sends webhooks for the following events:
 - [x] Smart contract escrow
 - [x] API infrastructure
 - [x] Local development environment
+- [x] **Subscription and recurring payments**
+- [x] **Complete merchant dashboard**
+- [x] **Webhook system with testing**
+- [x] **Payment links functionality**
+- [x] **sBTC to USD conversion**
+- [x] **Drop-in widgets**
 
 ### Phase 2: Production Deployment
 - [ ] Mainnet smart contract deployment
@@ -572,7 +580,6 @@ StacksGate sends webhooks for the following events:
 - [ ] Security audit and penetration testing
 
 ### Phase 3: Advanced Features
-- [ ] Subscription and recurring payments
 - [ ] Multi-currency support (STX, other SIP-010 tokens)
 - [ ] Advanced analytics and reporting
 - [ ] Mobile SDK development

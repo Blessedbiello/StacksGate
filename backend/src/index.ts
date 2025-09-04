@@ -14,6 +14,8 @@ import paymentRoutes from '@/routes/payments';
 import merchantRoutes from '@/routes/merchants';
 import webhookRoutes from '@/routes/webhooks';
 import healthRoutes from '@/routes/health';
+import paymentLinksRoutes from '@/routes/paymentLinks';
+import subscriptionRoutes from '@/routes/subscriptions';
 
 // Load environment variables
 dotenv.config();
@@ -63,6 +65,8 @@ app.use('/api/v1/health', healthRoutes);
 app.use('/api/v1/payment-intents', paymentRoutes);
 app.use('/api/v1/merchants', merchantRoutes);
 app.use('/api/v1/webhooks', webhookRoutes);
+app.use('/api/v1/payment-links', paymentLinksRoutes);
+app.use('/api/v1/subscriptions', subscriptionRoutes);
 
 // Global error handler
 app.use((error: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
