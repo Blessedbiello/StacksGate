@@ -1,15 +1,6 @@
 {
   "version": 2,
   "name": "stacksgate-frontend",
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
-    }
-  ],
   "routes": [
     {
       "src": "/assets/(.*)",
@@ -21,17 +12,5 @@
       "src": "/(.*)",
       "dest": "/index.html"
     }
-  ],
-  "env": {
-    "VITE_API_URL": "@stacksgate_api_url",
-    "VITE_WIDGET_URL": "@stacksgate_widget_url",
-    "VITE_APP_NAME": "StacksGate",
-    "VITE_STACKS_NETWORK": "testnet"
-  },
-  "build": {
-    "env": {
-      "VITE_API_URL": "@stacksgate_api_url",
-      "VITE_WIDGET_URL": "@stacksgate_widget_url"
-    }
-  }
+  ]
 }
