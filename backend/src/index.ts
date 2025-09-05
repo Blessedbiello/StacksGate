@@ -8,6 +8,7 @@ import { createServer } from 'http';
 import { logger } from '@/utils/logger';
 import { connectDatabase } from '@/utils/database';
 import { connectRedis } from '@/utils/redis';
+import { runMigrations } from '@/utils/migrate';
 
 // Route imports
 import paymentRoutes from '@/routes/payments';
@@ -142,6 +143,21 @@ async function startServer() {
     // Connect to database
     await connectDatabase();
     logger.info('Database connected successfully');
+
+    // Run database migrations if AUTO_MIGRATE is enabled
+    if (process.env.AUTO_MIGRATE === 'true') {
+      logger.info('AUTO_MIGRATE enabled - running database migrations...');
+      const migrationSuccess = await runMigrations();
+      
+      if (!migrationSuccess) {
+        logger.error('Database migration failed - server startup aborted');
+        process.exit(1);
+      }
+      
+      logger.info('Database migrations completed successfully');
+    } else {
+      logger.info('AUTO_MIGRATE disabled - skipping database migrations');
+    }
 
     // Connect to Redis (optional)
     try {

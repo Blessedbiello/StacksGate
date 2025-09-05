@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { getDatabase } from '@/utils/database';
 import { getRedisClient } from '@/utils/redis';
+import { getMigrationStatus } from '@/utils/migrate';
 import { logger } from '@/utils/logger';
 
 const router = Router();
@@ -12,6 +13,11 @@ interface HealthStatus {
   services: {
     database: 'up' | 'down';
     redis: 'up' | 'down';
+  };
+  migration: {
+    initialized: boolean;
+    tables: string[];
+    autoMigrateEnabled: boolean;
   };
   uptime: number;
 }
@@ -27,6 +33,11 @@ router.get('/', async (req: Request, res: Response) => {
       database: 'up',
       redis: 'up',
     },
+    migration: {
+      initialized: false,
+      tables: [],
+      autoMigrateEnabled: process.env.AUTO_MIGRATE === 'true',
+    },
     uptime: process.uptime(),
   };
 
@@ -35,6 +46,20 @@ router.get('/', async (req: Request, res: Response) => {
     const db = getDatabase();
     await db.query('SELECT 1');
     healthStatus.services.database = 'up';
+    
+    // Check migration status
+    try {
+      const migrationStatus = await getMigrationStatus();
+      healthStatus.migration.initialized = migrationStatus.initialized;
+      healthStatus.migration.tables = migrationStatus.tables;
+      
+      // If database is up but not initialized and auto-migrate is disabled, show warning
+      if (!migrationStatus.initialized && !healthStatus.migration.autoMigrateEnabled) {
+        logger.warn('Database is connected but not initialized. Enable AUTO_MIGRATE=true to run migrations automatically.');
+      }
+    } catch (migrationError) {
+      logger.error('Migration status check failed:', migrationError);
+    }
   } catch (error) {
     logger.error('Database health check failed:', error);
     healthStatus.services.database = 'down';
