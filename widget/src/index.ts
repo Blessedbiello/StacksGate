@@ -40,11 +40,24 @@ class StacksGate extends EventEmitter {
     this.config = config;
     this.api = new SimpleStacksGateAPI({
       apiKey: config.apiKey,
-      apiUrl: config.apiUrl || 'http://localhost:3000/api/v1',
+      apiUrl: config.apiUrl || this.getDefaultApiUrl(),
       testMode: config.testMode ?? true,
     });
 
     this.emit('initialized', { config });
+  }
+
+  // Smart environment detection for API URL
+  private getDefaultApiUrl(): string {
+    if (typeof window !== 'undefined') {
+      // Running in browser - check hostname
+      const hostname = window.location.hostname;
+      if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.includes('.local')) {
+        return 'http://localhost:3000/api/v1';
+      }
+    }
+    // Default to production for all other environments
+    return 'https://stacksgate.onrender.com/api/v1';
   }
 
   // Create a payment intent
