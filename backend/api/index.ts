@@ -39,6 +39,9 @@ app.use(cors({
   origin: process.env.CORS_ORIGIN?.split(',') || [
     'http://localhost:5173',
     'http://localhost:3001',
+    'https://stacksgate-frontend-gold.vercel.app',
+    'https://stacks-gate-frontend.vercel.app',
+    'https://stacksgate-widget-eukzacqe9-blessedbiellogmailcoms-projects.vercel.app',
     'https://stacksgate.vercel.app',
     'https://stacksgate-widget.vercel.app'
   ],
