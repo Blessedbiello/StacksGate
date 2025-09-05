@@ -41,11 +41,8 @@ export async function runMigrations(): Promise<boolean> {
 
     const sqlContent = fs.readFileSync(sqlPath, 'utf8');
     
-    // Split by semicolons and execute each statement
-    const statements = sqlContent
-      .split(';')
-      .map(stmt => stmt.trim())
-      .filter(stmt => stmt.length > 0 && !stmt.startsWith('--'));
+    // Parse SQL statements properly handling multi-line statements and dollar quotes
+    const statements = parseSQLStatements(sqlContent);
 
     logger.info(`Executing ${statements.length} migration statements...`);
 
@@ -96,6 +93,126 @@ async function checkTableExists(tableName: string): Promise<boolean> {
     logger.error(`Error checking if table ${tableName} exists:`, error);
     return false;
   }
+}
+
+function parseSQLStatements(sqlContent: string): string[] {
+  const statements: string[] = [];
+  let currentStatement = '';
+  let inDollarQuote = false;
+  let dollarQuoteTag = '';
+  let inSingleLineComment = false;
+  let inMultiLineComment = false;
+  let inSingleQuote = false;
+  let inDoubleQuote = false;
+  
+  const lines = sqlContent.split('\n');
+  
+  for (let lineNum = 0; lineNum < lines.length; lineNum++) {
+    let line = lines[lineNum];
+    
+    // Skip empty lines when not inside a statement
+    if (!currentStatement.trim() && !line.trim()) {
+      continue;
+    }
+    
+    for (let i = 0; i < line.length; i++) {
+      const char = line[i];
+      const nextChar = line[i + 1] || '';
+      const prevChar = line[i - 1] || '';
+      
+      // Handle single line comments
+      if (!inDollarQuote && !inSingleQuote && !inDoubleQuote && !inMultiLineComment) {
+        if (char === '-' && nextChar === '-') {
+          inSingleLineComment = true;
+          continue;
+        }
+      }
+      
+      // Handle multi-line comments
+      if (!inDollarQuote && !inSingleQuote && !inDoubleQuote && !inSingleLineComment) {
+        if (char === '/' && nextChar === '*') {
+          inMultiLineComment = true;
+          i++; // skip next char
+          continue;
+        }
+      }
+      
+      if (inMultiLineComment && char === '*' && nextChar === '/') {
+        inMultiLineComment = false;
+        i++; // skip next char
+        continue;
+      }
+      
+      // Skip if in comment
+      if (inSingleLineComment || inMultiLineComment) {
+        continue;
+      }
+      
+      // Handle dollar quotes
+      if (!inSingleQuote && !inDoubleQuote && char === '$') {
+        if (!inDollarQuote) {
+          // Start of dollar quote - find the tag
+          const dollarEnd = line.indexOf('$', i + 1);
+          if (dollarEnd !== -1) {
+            dollarQuoteTag = line.substring(i, dollarEnd + 1);
+            inDollarQuote = true;
+            currentStatement += char;
+            continue;
+          }
+        } else {
+          // Check if this ends the dollar quote
+          const possibleEndTag = line.substring(i, i + dollarQuoteTag.length);
+          if (possibleEndTag === dollarQuoteTag) {
+            inDollarQuote = false;
+            currentStatement += dollarQuoteTag;
+            i += dollarQuoteTag.length - 1; // Skip the tag
+            dollarQuoteTag = '';
+            continue;
+          }
+        }
+      }
+      
+      // Handle regular quotes (only if not in dollar quote)
+      if (!inDollarQuote) {
+        if (char === "'" && prevChar !== '\\') {
+          inSingleQuote = !inSingleQuote;
+        } else if (char === '"' && prevChar !== '\\') {
+          inDoubleQuote = !inDoubleQuote;
+        }
+        
+        // Handle statement termination
+        if (char === ';' && !inSingleQuote && !inDoubleQuote) {
+          currentStatement += char;
+          const statement = currentStatement.trim();
+          if (statement && !statement.startsWith('--')) {
+            statements.push(statement);
+          }
+          currentStatement = '';
+          continue;
+        }
+      }
+      
+      currentStatement += char;
+    }
+    
+    // Reset single line comment at end of line
+    if (inSingleLineComment) {
+      inSingleLineComment = false;
+    }
+    
+    // Add newline to preserve line breaks in multi-line statements
+    if (currentStatement.trim()) {
+      currentStatement += '\n';
+    }
+  }
+  
+  // Add any remaining statement
+  const finalStatement = currentStatement.trim();
+  if (finalStatement && !finalStatement.startsWith('--')) {
+    statements.push(finalStatement);
+  }
+  
+  return statements;
 }
 
 export async function getMigrationStatus(): Promise<{
