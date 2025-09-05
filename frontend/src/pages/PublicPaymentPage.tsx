@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import {
   CurrencyDollarIcon,
   ShieldCheckIcon,
@@ -18,6 +18,7 @@ interface PaymentLinkData {
   allow_custom_amounts: boolean;
   min_amount?: number;
   max_amount?: number;
+  success_url?: string;
 }
 
 interface CustomerInfo {
@@ -36,7 +37,6 @@ interface CustomerInfo {
 
 export default function PublicPaymentPage() {
   const { linkId } = useParams<{ linkId: string }>();
-  const navigate = useNavigate();
   
   const [paymentLink, setPaymentLink] = useState<PaymentLinkData | null>(null);
   const [loading, setLoading] = useState(true);
