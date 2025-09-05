@@ -4,18 +4,18 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 
-import { logger } from '../src/utils/logger';
-import { connectDatabase } from '../src/utils/database';
-import { connectRedis } from '../src/utils/redis';
+import { logger } from '@/utils/logger';
+import { connectDatabase } from '@/utils/database';
+import { connectRedis } from '@/utils/redis';
 
 // Route imports
-import paymentRoutes from '../src/routes/payments';
-import merchantRoutes from '../src/routes/merchants';
-import webhookRoutes from '../src/routes/webhooks';
-import healthRoutes from '../src/routes/health';
-import paymentLinksRoutes from '../src/routes/paymentLinks';
-import subscriptionRoutes from '../src/routes/subscriptions';
-import exchangeRateRoutes from '../src/routes/exchangeRate';
+import paymentRoutes from '@/routes/payments';
+import merchantRoutes from '@/routes/merchants';
+import webhookRoutes from '@/routes/webhooks';
+import healthRoutes from '@/routes/health';
+import paymentLinksRoutes from '@/routes/paymentLinks';
+import subscriptionRoutes from '@/routes/subscriptions';
+import exchangeRateRoutes from '@/routes/exchangeRate';
 
 // Load environment variables
 dotenv.config();
