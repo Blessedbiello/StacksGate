@@ -9,6 +9,7 @@ import {
   CursorArrowRaysIcon,
   DocumentTextIcon,
 } from '@heroicons/react/24/outline';
+import logoImage from '../assets/stacksgate.png';
 
 export default function HomePage() {
   return (
@@ -18,7 +19,7 @@ export default function HomePage() {
         <div className="flex items-center">
           <Link to="/" className="flex items-center space-x-2">
             <img 
-              src="/stacksgate.png" 
+              src={logoImage} 
               alt="StacksGate" 
               className="h-8 w-auto"
             />
@@ -502,7 +503,7 @@ export default function HomePage() {
             <div>
               <div className="flex items-center space-x-2 mb-4">
                 <img 
-                  src="/stacksgate.png" 
+                  src={logoImage} 
                   alt="StacksGate" 
                   className="h-6 w-auto"
                 />

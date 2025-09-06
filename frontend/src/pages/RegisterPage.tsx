@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import LoadingSpinner from '@/components/LoadingSpinner';
+import logoImage from '../assets/stacksgate.png';
 
 export default function RegisterPage() {
   const { user, register, isLoading } = useAuth();
@@ -76,7 +77,7 @@ export default function RegisterPage() {
         <div>
           <div className="flex justify-center items-center space-x-2 mb-2">
             <img 
-              src="/stacksgate.png" 
+              src={logoImage} 
               alt="StacksGate" 
               className="h-10 w-auto"
             />
