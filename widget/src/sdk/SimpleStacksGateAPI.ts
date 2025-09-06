@@ -39,14 +39,22 @@ export class SimpleStacksGateAPI {
   }
 
   async getPaymentIntent(paymentIntentId: string): Promise<PaymentIntent> {
-    const response = await fetch(`${this.config.apiUrl}/payment-intents/${paymentIntentId}`, {
+    // Use public endpoint that doesn't require authentication
+    const response = await fetch(`${this.config.apiUrl}/payment-intents/public/${paymentIntentId}`, {
       headers: {
-        'Authorization': `Bearer ${this.config.apiKey}`,
+        'Content-Type': 'application/json',
       },
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to get payment intent: ${response.statusText}`);
+      let errorMessage = `HTTP ${response.status}`;
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData.error?.message || errorMessage;
+      } catch {
+        errorMessage = response.statusText || errorMessage;
+      }
+      throw new Error(`Failed to get payment intent: ${errorMessage}`);
     }
 
     return response.json();

@@ -88,7 +88,69 @@ router.post('/', authenticateApiKey, async (req: Request, res: Response) => {
   }
 });
 
-// Retrieve payment intent
+// Public payment intent retrieval (no authentication required)
+router.get('/public/:id', async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const paymentIntent = await PaymentIntent.findById(id);
+
+    if (!paymentIntent) {
+      return res.status(404).json({
+        error: {
+          type: 'invalid_request_error',
+          message: 'Payment intent not found',
+        },
+      });
+    }
+
+    // Check if payment intent is expired
+    const now = new Date();
+    if (paymentIntent.expires_at && paymentIntent.expires_at < now) {
+      return res.status(404).json({
+        error: {
+          type: 'invalid_request_error',
+          message: 'Payment intent has expired',
+        },
+      });
+    }
+
+    // Return only public/safe information (no sensitive merchant data)
+    const publicResponse = {
+      id: paymentIntent.id,
+      object: 'payment_intent',
+      amount: paymentIntent.amount_sats / 100000000, // Convert sats back to BTC
+      amount_sats: paymentIntent.amount_sats,
+      amount_usd: paymentIntent.amount_usd,
+      currency: paymentIntent.currency,
+      status: paymentIntent.status,
+      description: paymentIntent.description,
+      stacks_address: paymentIntent.stacks_address,
+      bitcoin_address: paymentIntent.bitcoin_address,
+      confirmation_count: paymentIntent.confirmation_count,
+      created: Math.floor(paymentIntent.created_at!.getTime() / 1000),
+      expires_at: Math.floor(paymentIntent.expires_at!.getTime() / 1000),
+      // Note: No metadata, merchant info, or other sensitive data
+    };
+
+    logger.info('Public payment intent retrieved', {
+      id: paymentIntent.id,
+      status: paymentIntent.status,
+    });
+
+    res.json(publicResponse);
+  } catch (error) {
+    logger.error('Failed to retrieve public payment intent:', error);
+    res.status(500).json({
+      error: {
+        type: 'api_error',
+        message: 'Failed to retrieve payment intent',
+      },
+    });
+  }
+});
+
+// Retrieve payment intent (authenticated)
 router.get('/:id', authenticateApiKey, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;

@@ -36,15 +36,40 @@ app.use(helmet({
   },
 }));
 
-// CORS configuration
-app.use(cors({
-  origin: process.env.CORS_ORIGIN?.split(',') || [
+// CORS configuration - allow dynamic Vercel deployments and current frontend
+const getAllowedOrigins = () => {
+  const defaultOrigins = [
     'http://localhost:5173',
     'http://localhost:3001',
     'https://stacksgate-frontend-gold.vercel.app',
     'https://stacks-gate-frontend.vercel.app',
-    'https://stacksgate.vercel.app'
-  ],
+    'https://stacksgate.vercel.app',
+    // Current frontend deployments
+    'https://stacksgate-frontend-33gzzpvgj-blessedbiellogmailcoms-projects.vercel.app',
+    'https://stacksgate-frontend-ourwlcz43-blessedbiellogmailcoms-projects.vercel.app',
+    'https://stacksgate-frontend-9j9wvsxba-blessedbiellogmailcoms-projects.vercel.app',
+    'https://stacksgate-frontend-aclnqlx3a-blessedbiellogmailcoms-projects.vercel.app'
+  ];
+  
+  return process.env.CORS_ORIGIN?.split(',') || defaultOrigins;
+};
+
+app.use(cors({
+  origin: (origin, callback) => {
+    const allowedOrigins = getAllowedOrigins();
+    
+    // Allow requests with no origin (mobile apps, Postman, etc.)
+    if (!origin) return callback(null, true);
+    
+    // Check if origin matches exactly or is a Vercel deployment
+    if (allowedOrigins.includes(origin) || 
+        origin.includes('vercel.app') || 
+        origin.includes('localhost')) {
+      return callback(null, true);
+    }
+    
+    return callback(new Error('CORS: Origin not allowed'), false);
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key'],
