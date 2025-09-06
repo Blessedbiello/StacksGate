@@ -109,7 +109,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.setItem('stacksgate_user', JSON.stringify(response.merchant));
 
       // Navigate to dashboard or intended page
-      const from = location.state?.from?.pathname || '/dashboard';
+      const from = location.state?.from?.pathname || '/app/dashboard';
       navigate(from, { replace: true });
     } catch (error) {
       throw error;
@@ -134,7 +134,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.setItem('stacksgate_token', response.token);
       localStorage.setItem('stacksgate_user', JSON.stringify(response.merchant));
 
-      navigate('/dashboard', { replace: true });
+      navigate('/app/dashboard', { replace: true });
     } catch (error) {
       throw error;
     } finally {
@@ -149,7 +149,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem('stacksgate_token');
     localStorage.removeItem('stacksgate_user');
     
-    navigate('/login', { replace: true });
+    navigate('/', { replace: true });
   };
 
   const updateUser = async (data: Partial<User>): Promise<void> => {
