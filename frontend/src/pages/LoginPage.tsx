@@ -50,9 +50,16 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
-          <h1 className="text-center text-3xl font-bold text-bitcoin-500 mb-2">
-            StacksGate
-          </h1>
+          <div className="flex justify-center items-center space-x-2 mb-2">
+            <img 
+              src="/stacksgate.png" 
+              alt="StacksGate" 
+              className="h-10 w-auto"
+            />
+            <h1 className="text-3xl font-bold text-bitcoin-500">
+              StacksGate
+            </h1>
+          </div>
           <h2 className="text-center text-2xl font-bold text-gray-900">
             Sign in to your account
           </h2>
