@@ -15,13 +15,13 @@ import {
 } from '@heroicons/react/24/outline';
 
 const navigation = [
-  { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
-  { name: 'Payments', href: '/payments', icon: CreditCardIcon },
-  { name: 'Payment Links', href: '/payment-links', icon: LinkIcon },
-  { name: 'Subscriptions', href: '/subscriptions', icon: CalendarIcon },
-  { name: 'Integration', href: '/integration', icon: CodeBracketIcon },
-  { name: 'Webhooks', href: '/webhooks', icon: BellIcon },
-  { name: 'Settings', href: '/settings', icon: CogIcon },
+  { name: 'Dashboard', href: '/app/dashboard', icon: HomeIcon },
+  { name: 'Payments', href: '/app/payments', icon: CreditCardIcon },
+  { name: 'Payment Links', href: '/app/payment-links', icon: LinkIcon },
+  { name: 'Subscriptions', href: '/app/subscriptions', icon: CalendarIcon },
+  { name: 'Integration', href: '/app/integration', icon: CodeBracketIcon },
+  { name: 'Webhooks', href: '/app/webhooks', icon: BellIcon },
+  { name: 'Settings', href: '/app/settings', icon: CogIcon },
 ];
 
 export default function Layout() {
@@ -31,7 +31,7 @@ export default function Layout() {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/');
   };
 
   return (

@@ -14,7 +14,7 @@ export default function LoginPage() {
 
   // Redirect if already logged in
   if (user && !isLoading) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/app/dashboard" replace />;
   }
 
   const handleSubmit = async (e: React.FormEvent) => {

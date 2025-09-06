@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StacksGate Widget Integration Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .info { background-color: #d1ecf1; color: #0c5460; }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #widget-container {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            min-height: 200px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>StacksGate Widget Integration Test</h1>
+    
+    <div class="test-section">
+        <h2>Environment Detection Test</h2>
+        <div id="environment-status" class="status info">
+            Testing environment detection...
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Widget Initialization Test</h2>
+        <button onclick="testInitialization()">Test Widget Initialization</button>
+        <div id="init-status" class="status info">
+            Click button to test initialization
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Payment Intent Creation Test</h2>
+        <button onclick="testPaymentIntentCreation()">Create Test Payment Intent</button>
+        <div id="payment-status" class="status info">
+            Click button to test payment intent creation
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Widget Display Test</h2>
+        <button onclick="testWidgetDisplay()">Create Widget</button>
+        <div id="widget-container">
+            Widget will appear here...
+        </div>
+    </div>
+
+    <!-- Load StacksGate Widget -->
+    <script src="https://stacksgate-widget-eukzacqe9-blessedbiellogmailcoms-projects.vercel.app/stacksgate.js"></script>
+
+    <script>
+        // Test environment detection
+        function checkEnvironment() {
+            const hostname = window.location.hostname;
+            const isLocal = hostname === 'localhost' || hostname === '127.0.0.1' || hostname.includes('.local');
+            const expectedApiUrl = isLocal ? 'http://localhost:3000/api/v1' : 'https://stacksgate.onrender.com/api/v1';
+            
+            document.getElementById('environment-status').innerHTML = `
+                <strong>Environment Detection:</strong><br>
+                Hostname: ${hostname}<br>
+                Is Local: ${isLocal}<br>
+                Expected API URL: ${expectedApiUrl}
+            `;
+            document.getElementById('environment-status').className = 'status success';
+        }
+
+        // Test widget initialization
+        function testInitialization() {
+            try {
+                if (typeof StacksGate === 'undefined') {
+                    throw new Error('StacksGate not loaded');
+                }
+
+                // Test initialization with demo API key
+                StacksGate.init({
+                    apiKey: 'pk_test_demo123',
+                    testMode: true
+                });
+
+                const config = StacksGate.getConfig();
+                const isInitialized = StacksGate.isInitialized();
+
+                document.getElementById('init-status').innerHTML = `
+                    <strong>Initialization Success!</strong><br>
+                    Initialized: ${isInitialized}<br>
+                    API Key: ${config.apiKey}<br>
+                    Test Mode: ${config.testMode}
+                `;
+                document.getElementById('init-status').className = 'status success';
+            } catch (error) {
+                document.getElementById('init-status').innerHTML = `
+                    <strong>Initialization Failed:</strong><br>
+                    ${error.message}
+                `;
+                document.getElementById('init-status').className = 'status error';
+            }
+        }
+
+        // Test payment intent creation
+        async function testPaymentIntentCreation() {
+            try {
+                if (!StacksGate.isInitialized()) {
+                    throw new Error('Widget not initialized. Run initialization test first.');
+                }
+
+                document.getElementById('payment-status').innerHTML = 'Creating payment intent...';
+                document.getElementById('payment-status').className = 'status info';
+
+                const paymentIntent = await StacksGate.createPaymentIntent({
+                    amount: 1000, // 1000 sats
+                    description: 'Test payment',
+                    metadata: { test: 'true' }
+                });
+
+                document.getElementById('payment-status').innerHTML = `
+                    <strong>Payment Intent Created!</strong><br>
+                    ID: ${paymentIntent.id}<br>
+                    Amount: ${paymentIntent.amount_sats} sats<br>
+                    Status: ${paymentIntent.status}
+                `;
+                document.getElementById('payment-status').className = 'status success';
+                
+                return paymentIntent.id;
+            } catch (error) {
+                document.getElementById('payment-status').innerHTML = `
+                    <strong>Payment Intent Creation Failed:</strong><br>
+                    ${error.message}
+                `;
+                document.getElementById('payment-status').className = 'status error';
+                return null;
+            }
+        }
+
+        // Test widget display
+        async function testWidgetDisplay() {
+            try {
+                const paymentIntentId = await testPaymentIntentCreation();
+                if (!paymentIntentId) {
+                    throw new Error('Failed to create payment intent for widget test');
+                }
+
+                const widget = StacksGate.createWidget(paymentIntentId, {
+                    containerId: 'widget-container',
+                    theme: 'light',
+                    onSuccess: (payment) => {
+                        console.log('Payment successful:', payment);
+                        alert('Payment successful!');
+                    },
+                    onError: (error) => {
+                        console.error('Payment error:', error);
+                        alert('Payment error: ' + error.message);
+                    },
+                    onCancel: () => {
+                        console.log('Payment cancelled');
+                        alert('Payment cancelled');
+                    }
+                });
+
+                widget.mount();
+            } catch (error) {
+                document.getElementById('widget-container').innerHTML = `
+                    <div class="status error">
+                        <strong>Widget Display Failed:</strong><br>
+                        ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // Run environment check on load
+        window.addEventListener('load', checkEnvironment);
+    </script>
+</body>
+</html>
