@@ -65,14 +65,14 @@ export default function HomePage() {
           <div className="text-center">
             <h1 className="text-5xl lg:text-7xl font-bold text-gray-900 leading-tight">
               Accept{' '}
-              <span className="bg-gradient-to-r from-bitcoin-500 to-bitcoin-400 bg-clip-text text-transparent">
-                Bitcoin payments
+              <span className="bg-gradient-to-r from-bitcoin-500 to-stacks-500 bg-clip-text text-transparent">
+                sBTC payments
               </span>
               <br />
-              with ease
+              on Stacks
             </h1>
             <p className="mt-6 text-xl lg:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              sBTC payment infrastructure for developers. Start accepting Bitcoin in minutes, not days.
+              sBTC payment infrastructure powered by the <a href="https://docs.stacks.co/" target="_blank" rel="noopener noreferrer" className="text-stacks-600 hover:text-stacks-700 underline">Stacks blockchain</a>. Start accepting Bitcoin-backed payments in minutes, not days.
             </p>
             <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
               <Link
@@ -156,10 +156,10 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-              Everything you need to accept Bitcoin
+              Everything you need to accept sBTC payments
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Built for developers, designed for scale. Accept Bitcoin payments with the same simplicity as traditional payment processors.
+              Built on <a href="https://docs.stacks.co/" target="_blank" rel="noopener noreferrer" className="text-stacks-600 hover:text-stacks-700 underline">Stacks</a> for developers, designed for scale. Accept Bitcoin-backed sBTC payments with the same simplicity as traditional payment processors.
             </p>
           </div>
           
@@ -184,7 +184,7 @@ export default function HomePage() {
                 <div>
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">Lightning fast</h3>
                   <p className="text-gray-600">
-                    Instant sBTC settlements on Stacks. No waiting for Bitcoin confirmations.
+                    Instant sBTC settlements on the <a href="https://docs.stacks.co/" target="_blank" rel="noopener noreferrer" className="text-stacks-600 hover:text-stacks-700 underline">Stacks blockchain</a>. No waiting for Bitcoin L1 confirmations.
                   </p>
                 </div>
               </div>
@@ -225,11 +225,11 @@ export default function HomePage() {
                         <span className="font-semibold">$29.99</span>
                       </div>
                       <div className="space-y-3">
+                        <button className="w-full bg-stacks-500 text-white py-3 px-4 rounded-lg font-medium hover:bg-stacks-600 transition-colors">
+                          Pay with sBTC
+                        </button>
                         <button className="w-full bg-bitcoin-500 text-white py-3 px-4 rounded-lg font-medium hover:bg-bitcoin-600 transition-colors">
                           Pay with Bitcoin
-                        </button>
-                        <button className="w-full bg-gray-100 text-gray-700 py-3 px-4 rounded-lg font-medium hover:bg-gray-200 transition-colors">
-                          Pay with Lightning
                         </button>
                       </div>
                       <div className="text-center">
@@ -250,10 +250,10 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-              Start accepting Bitcoin in minutes
+              Start accepting sBTC payments in minutes
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Our APIs are designed to be simple and intuitive. Get up and running with just a few lines of code.
+              Our Stacks-powered APIs are designed to be simple and intuitive. Get up and running with Bitcoin-backed payments using just a few lines of code.
             </p>
           </div>
           
@@ -295,7 +295,7 @@ export default function HomePage() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900 mb-1">Simple Integration</h3>
-                  <p className="text-gray-600">Just a few lines of code to start accepting Bitcoin payments</p>
+                  <p className="text-gray-600">Just a few lines of code to start accepting sBTC payments on Stacks</p>
                 </div>
               </div>
               
@@ -353,7 +353,7 @@ export default function HomePage() {
               <ul className="space-y-4 mb-8">
                 <li className="flex items-center">
                   <CheckIcon className="h-5 w-5 text-success-500 mr-3" />
-                  <span className="text-gray-600">Accept Bitcoin & sBTC</span>
+                  <span className="text-gray-600">Accept sBTC on Stacks</span>
                 </li>
                 <li className="flex items-center">
                   <CheckIcon className="h-5 w-5 text-success-500 mr-3" />
@@ -472,10 +472,10 @@ export default function HomePage() {
       <section className="py-24 bg-gradient-to-br from-bitcoin-500 to-stacks-500">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
-            Join developers building the future of Bitcoin payments
+            Join developers building the future of sBTC payments
           </h2>
           <p className="text-xl text-bitcoin-100 max-w-3xl mx-auto mb-10">
-            Start accepting Bitcoin payments today with our developer-friendly platform.
+            Start accepting Bitcoin-backed sBTC payments today with our <a href="https://docs.stacks.co/" target="_blank" rel="noopener noreferrer" className="text-white hover:text-bitcoin-100 underline">Stacks-powered</a> developer platform.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
@@ -510,7 +510,7 @@ export default function HomePage() {
                 <span className="text-2xl font-bold text-bitcoin-500">StacksGate</span>
               </div>
               <p className="text-gray-400">
-                The simplest way to accept Bitcoin payments for developers.
+                The simplest way to accept sBTC payments on the <a href="https://docs.stacks.co/" target="_blank" rel="noopener noreferrer" className="text-stacks-400 hover:text-stacks-300 underline">Stacks blockchain</a> for developers.
               </p>
             </div>
             
