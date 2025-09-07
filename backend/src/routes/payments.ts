@@ -93,9 +93,12 @@ router.get('/public/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
+    logger.info('Public payment intent requested', { id });
+
     const paymentIntent = await PaymentIntent.findById(id);
 
     if (!paymentIntent) {
+      logger.warn('Public payment intent not found', { id });
       return res.status(404).json({
         error: {
           type: 'invalid_request_error',
@@ -107,7 +110,8 @@ router.get('/public/:id', async (req: Request, res: Response) => {
     // Check if payment intent is expired
     const now = new Date();
     if (paymentIntent.expires_at && paymentIntent.expires_at < now) {
-      return res.status(404).json({
+      logger.warn('Public payment intent expired', { id, expires_at: paymentIntent.expires_at });
+      return res.status(400).json({
         error: {
           type: 'invalid_request_error',
           message: 'Payment intent has expired',
@@ -122,25 +126,29 @@ router.get('/public/:id', async (req: Request, res: Response) => {
       amount: paymentIntent.amount_sats / 100000000, // Convert sats back to BTC
       amount_sats: paymentIntent.amount_sats,
       amount_usd: paymentIntent.amount_usd,
-      currency: paymentIntent.currency,
+      currency: paymentIntent.currency || 'btc',
       status: paymentIntent.status,
       description: paymentIntent.description,
       stacks_address: paymentIntent.stacks_address,
       bitcoin_address: paymentIntent.bitcoin_address,
-      confirmation_count: paymentIntent.confirmation_count,
+      confirmation_count: paymentIntent.confirmation_count || 0,
       created: Math.floor(paymentIntent.created_at!.getTime() / 1000),
       expires_at: Math.floor(paymentIntent.expires_at!.getTime() / 1000),
-      // Note: No metadata, merchant info, or other sensitive data
     };
 
-    logger.info('Public payment intent retrieved', {
+    logger.info('Public payment intent retrieved successfully', {
       id: paymentIntent.id,
       status: paymentIntent.status,
     });
 
     res.json(publicResponse);
   } catch (error) {
-    logger.error('Failed to retrieve public payment intent:', error);
+    logger.error('Failed to retrieve public payment intent:', {
+      error: error instanceof Error ? error.message : error,
+      stack: error instanceof Error ? error.stack : undefined,
+      id: req.params.id
+    });
+    
     res.status(500).json({
       error: {
         type: 'api_error',
