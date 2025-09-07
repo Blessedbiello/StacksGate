@@ -48,7 +48,8 @@ const getAllowedOrigins = () => {
     'https://stacksgate-frontend-33gzzpvgj-blessedbiellogmailcoms-projects.vercel.app',
     'https://stacksgate-frontend-ourwlcz43-blessedbiellogmailcoms-projects.vercel.app',
     'https://stacksgate-frontend-9j9wvsxba-blessedbiellogmailcoms-projects.vercel.app',
-    'https://stacksgate-frontend-aclnqlx3a-blessedbiellogmailcoms-projects.vercel.app'
+    'https://stacksgate-frontend-aclnqlx3a-blessedbiellogmailcoms-projects.vercel.app',
+    'https://stacksgate-frontend-jt0e2pqsj-blessedbiellogmailcoms-projects.vercel.app'
   ];
   
   return process.env.CORS_ORIGIN?.split(',') || defaultOrigins;
